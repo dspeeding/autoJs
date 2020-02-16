@@ -260,7 +260,11 @@ function startProc(){
         num = 0;
         while(num < 8){
             toastLog("等待广告 "+num*5+"s...");
-            id("tt_video_ad_close").findOne(5000).parent().click();
+            var a = id("tt_video_ad_close").findOne(5000)
+            if(a){
+                a.parent().click();
+                break;
+            }
             num++;
         }
 

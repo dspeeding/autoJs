@@ -17,7 +17,7 @@ toast("开始截图....");
 
 
 var clip = images.clip(img, 480,1266,44,48);
-images.save(clip, basePath+"37.png");
+images.save(clip, basePath+"33.png");
 
 //var clip = images.clip(img, 372,799,346,87);
 //images.save(clip, basePath+"观看视频获取.png");

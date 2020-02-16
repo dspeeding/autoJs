@@ -103,7 +103,7 @@ function startProc(){
             }
             num--;
         }
-        if(n <= 0){
+        if(num <= 0){
             toastLog("没有进入免费获取金币界面，退出...");
             exitApp();
             return ;
@@ -111,7 +111,7 @@ function startProc(){
 
         toastLog("找到免费领取金币，开始点击播放广告...");
         click(563,900);
-        sleep(3000);
+        sleep(2000);
 
         //判断广告是否全部点击完  如果都完成则 退出程序
         img_a = images.read(basePath+"免费获取金币.png");
@@ -126,7 +126,11 @@ function startProc(){
         num = 0;
         while(num < 8){
             toastLog("等待广告 "+num*5+"s...");
-            id("tt_video_ad_close").findOne(5000).parent().click();
+            var a = id("tt_video_ad_close").findOne(5000);
+            if(a){
+                a.parent().click();
+                break;
+            }
             num++;
         }
 
