@@ -123,9 +123,9 @@ function taskToFriend(){
 }
 
 //任务： 完成海报分享
-function taskToHaibao(){
+function taskToHaibao(index){
     
-    var p = className("android.view.View").text("更多").find()[1];
+    var p = className("android.view.View").text("更多").find()[index];
     p.parent().click();
 
     className("android.view.View").text("海报").waitFor();
@@ -152,8 +152,8 @@ function taskToHaibao(){
 }
 
 //任务： 完成一次功能指引
-function taskGongneng(){
-    var p = className("android.view.View").text("更多").find()[2];
+function taskGongneng(index){
+    var p = className("android.view.View").text("更多").find()[index];
     p.parent().click();
 
     className("android.view.View").text("功能指引").waitFor();
@@ -175,9 +175,9 @@ function taskGongneng(){
         if(b == null){
             toastLog("没点出来微信。。。");
             back(); //回退到功能指引列表
-            sleep(1000);
+            sleep(3000);
             back();
-            sleep(1000);
+            sleep(3000);
             return 1;
         }
     }
@@ -193,8 +193,8 @@ function taskGongneng(){
 }
 
 //任务： 完成一次非车险产品分享
-function taskIns(){
-    var p = className("android.view.View").text("更多").find()[5];
+function taskIns(index){
+    var p = className("android.view.View").text("更多").find()[index];
     p.parent().click();
 
     className("android.view.View").text("热卖保险").waitFor();
@@ -214,8 +214,8 @@ function taskIns(){
 }
 
 //任务： 完成一次活动攻略分享
-function taskHuodong(){
-    var p = className("android.view.View").text("更多").find()[3];
+function taskHuodong(index){
+    var p = className("android.view.View").text("更多").find()[index];
     p.parent().click();
 
     className("android.view.View").text("活动攻略").waitFor();
@@ -240,15 +240,16 @@ function taskHuodong(){
 }
 
 //任务： 参与热门活动
-function taskHot(){
-    var p = className("android.view.View").text("更多").find()[4];
+function taskHot(index){
+    var p = className("android.view.View").text("更多").find()[index];
     p.parent().click();
 
     className("android.view.View").text("热门活动").waitFor();
 
-    
-    var p = className("android.view.View").textEndsWith("热推").findOne(2000);
+    sleep(1000);
+    var p = className("android.view.View").text("热推").findOne(2000);
     if(p){
+        log("找到热推...");
         p = p.parent();
         click(p.bounds().centerX(), p.bounds().centerY());
     }else{
@@ -258,13 +259,29 @@ function taskHot(){
 
     sleep(5000);
 
-    back(); //回退到热门活动列表
-    sleep(1000);
-    back(); //回退到任务列表
+    var p = className("android.view.View").text("热门活动").findOne(1000);
+    if(p == null){
+        back(); //回退到热门活动列表
+        sleep(2000);
+    }
+    if(className("android.view.View").text("热门活动").findOne(1000)){
+        back(); //回退到任务列表
+        sleep(2000);
+    }
 }
 
 //任务： 完成一次平安资讯分享
 function toastZiXun(){
+
+    var p = className("android.view.View").text("首页").findOne(1000);
+    if(p){
+        var a = className("android.widget.TextView").text("分享赚钱").findOne();
+        click(a.bounds().centerX(), a.bounds().centerY());
+
+        //等待分享页面
+        className("android.view.View").text("分享赚钱").waitFor();
+    }
+
     //下滑到平安资讯那里
     var i=0;
     while(i<11){
@@ -391,22 +408,22 @@ function shareProc(){
             taskToFriend();
         }else if(task.taskName == "完成一次海报分享"){
             toastLog("开始任务 完成一次海报分享...");
-            taskToHaibao();
+            taskToHaibao(0);
         }else if(task.taskName == "完成一次功能指引分享"){
             toastLog("开始任务 完成一次功能指引分享...");
-            var ret = taskGongneng();
+            var ret = taskGongneng(1);
             if(ret == 1){
-                taskGongneng();
+                taskGongneng(1);
             }
         }else if(task.taskName == "完成一次非车险产品分享"){
             toastLog("开始任务 完成一次非车险产品分享...");
-            taskIns();
+            taskIns(4);
         }else if(task.taskName == "完成一次活动攻略分享"){
             toastLog("开始任务 完成一次活动攻略分享...");
-            taskHuodong();
+            taskHuodong(2);
         }else if(task.taskName == "参与热门活动"){
             toastLog("开始任务 参与热门活动...");
-            taskHot();
+            taskHot(3);
         }else if(task.taskName == "完成一次平安资讯分享"){
             toastLog("开始任务 完成一次平安资讯分享");
             toastZiXun();
@@ -434,13 +451,143 @@ function shareProc(){
 
 }
 
+//领取油奖励
+function getOil(name){
+    while(1){
+        var p ;
+        if(name=="签到送油"){
+            p =  className("android.view.View").text(name).find();
+            if(p.length < 2){
+                break;
+            }
+        }else{
+            p = className("android.view.View").text(name).findOne(1000);
+            if(p == null){
+                break;
+            }
+            
+            p.parent().parent().click();
+            sleep(2000);
+        }
+    }
+}
+
+//领油
+function startOil(){
+    toastLog("开始领油流程...");
+    var k = id("main_page_tab_menu1").findOne();
+    click(k.bounds().centerX(), k.bounds().centerY());
+    sleep(1000);
+
+    //点击热门 领油
+    id("ll_hot12").findOne().click();
+
+    //等待进入页面
+    className("android.view.View").text("天天来攒油").waitFor();
+
+    //点击打卡按钮
+    var a = text("今日已领").findOne(1000);
+    if(a){
+        toastLog("今日已打卡...");
+    }else{
+        className("android.widget.Button").text("打卡").findOne().click();
+        sleep(1000);
+    }
+    
+    //进入偷油页面
+    className("android.view.View").text("偷油").findOne().parent().click();
+
+    //等待进入页面
+    className("android.view.View").text("偷汽油").waitFor();
+
+
+    //先做任务领取剩余次数
+    className("android.view.View").text("剩余次数").findOne().parent().click();
+    sleep(5000);
+
+    while(1){
+        //点击去体验
+        var p = className("android.view.View").text("去体验").findOne(1000);
+        if(p == null){
+            break;
+        }
+
+        p.click();
+        sleep(3000);
+        back();
+        sleep(1000);
+    }
+
+    //去找关闭按钮
+    var p = className("android.view.View").text("做任务 得次数").findOne().parent();
+    p.children().forEach(function(child){
+        if(child.className()=="android.widget.Image" && child.indexInParent() == 3){
+            child.click();
+            sleep(1000);
+        }
+    });
+
+    var count = 0;
+    while(1){
+        toastLog("开始偷油..."+(parseInt(count)+1));
+        var p = className("android.view.View").text("0次").findOne(1000);
+        if(p){
+            toastLog("次数已用完...");
+            break;
+        }
+        //点击偷油按钮
+        p = className("android.widget.Button").text("偷油").findOne(2000);
+        if(p == null){
+            toastLog("没有找到偷油按钮，不让偷了...");
+            sleep(1000);
+            back();     //回退到攒油主界面
+            className("android.view.View").text("天天来攒油").waitFor();
+            sleep(1000);
+            //进入偷油页面
+            className("android.view.View").text("偷油").findOne().parent().click();
+
+            //等待进入页面
+            className("android.view.View").text("偷汽油").waitFor();
+        }else{
+            p.click();
+        }
+        sleep(5000);
+        count++;
+    }
+    
+    toastLog("偷了["+count+"]次...");
+    back();
+    sleep(1000);
+
+    toastLog("开始领油滴...");
+    
+
+    var p = className("android.view.View").text("一键收油").findOne(1000);
+    if(p){
+        toastLog("一键收油...");
+        p.parent().click();
+    }
+    sleep(2000);
+
+    toastLog("领油滴结束,回到首页...");
+    back();
+    
+
+    toastLog("领油流程结束...");
+}
+
 //开始流程
 function startProc(){
 
     var ret = 0;
+    //签到
     ret = startSign();
 
+    //分享
     shareProc();
+
+    //领油
+    startOil();
     
 }
 
