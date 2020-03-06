@@ -162,7 +162,7 @@ function taskGongneng(index){
     var p = text("立即分享").findOne().parent();
     click(p.bounds().centerX(), p.bounds().centerY());
 
-    sleep(5000);
+    sleep(2000);
     var a = text("立即分享").findOne(3000);
     a.click();
     
@@ -327,7 +327,7 @@ function getGlod(name){
         return ;
     }
     while(1){
-        var p = className("android.view.View").text(name).findOne(5000);
+        var p = className("android.view.View").text(name).findOne(3000);
         if(p == null){
             break;
         }
@@ -480,7 +480,14 @@ function startOil(){
     sleep(1000);
 
     //点击热门 领油
-    id("ll_hot12").findOne().click();
+    var a = text("活动中心").findOne().parent();
+    click(a.bounds().centerX(), a.bounds().centerY());
+    text("活动").waitFor();
+
+    log("横向滑动找到免费领油界面");
+    a = text("签到赚积分").findOne().parent();
+    swipe(device.width*5/6, a.bounds().centerY(), device.width/6, a.bounds().centerY(), 100);
+    a = text("免费领油").findOne().parent();
 
     //等待进入页面
     className("android.view.View").text("天天来攒油").waitFor();
